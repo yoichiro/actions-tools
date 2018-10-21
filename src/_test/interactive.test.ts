@@ -1,14 +1,14 @@
 import test from "ava"
 import {Interactive} from "../interactive"
 import * as sinon from "sinon"
-import {ConversationResponse} from "../conversation"
+import {Conversation, ConversationResponse} from "../conversation"
 
 test("When the assistant immediately returns no response", async t => {
-    const interactive = new Interactive({
-        credential: __dirname + "/../../src/_test/test-credentials.json",
-        locale: "en-US",
-        level: "full",
-    })
+    const conversation = new Conversation(
+        "en-US",
+        require(__dirname + "/../../src/_test/test-credentials.json"),
+    )
+    const interactive = new Interactive(conversation,"full")
     const mockConversation = sinon.mock(interactive._conversation)
     mockConversation
         .expects("say")

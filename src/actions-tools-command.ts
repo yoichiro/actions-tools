@@ -1,6 +1,8 @@
 import * as yargs from "yargs"
 import {Interactive} from "./interactive"
 import {Setup} from "./setup"
+import {Conversation} from "./conversation"
+import * as fs from "fs"
 
 export class ActionsToolsCommand {
 
@@ -86,11 +88,9 @@ export class ActionsToolsCommand {
     _createInteractive(credential: string,
                        locale: string,
                        level: string): Interactive {
-        return new Interactive({
-            credential,
-            locale,
-            level,
-        })
+        const conversation = new Conversation(locale, require(fs.realpathSync(credential)))
+        const interactive = new Interactive(conversation, level)
+        return interactive
     }
 
     async _startSetup(secret: string, output: string): Promise<void> {
