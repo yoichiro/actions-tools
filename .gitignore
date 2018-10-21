@@ -1,0 +1,8 @@
+dist/
+node_modules/
+package/
+*.tgz
+.nyc_output/
+client_secret_*.json
+credentials*.json
+*.log

@@ -1,0 +1,12 @@
+dist/test/
+package/
+src/
+*.DS_Store
+*.log
+*.tgz
+tslint.json
+tsconfig.json
+.nyc_output/
+client_secret_*.json
+credentials*.json
+.idea/
