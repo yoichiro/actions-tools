@@ -5,14 +5,11 @@ import {Conversation, ConversationResponse} from "./conversation"
 export class Interactive {
 
     _conversation: Conversation
+    _level: string
 
-    constructor(
-        private params: {
-            credential: string,
-            locale: string,
-            level: string,
-        }) {
-        this._conversation = this._createConversation(this.params.credential, this.params.locale)
+    constructor(conversation: Conversation, level: string) {
+        this._conversation = conversation
+        this._level = level
     }
 
     async start(): Promise<void> {
@@ -40,7 +37,7 @@ export class Interactive {
 
     _output(messages: (string | ConversationResponse)[]): void {
         messages.forEach((message: string | ConversationResponse) => {
-            if (message instanceof Object && this.params.level === "simple") {
+            if (message instanceof Object && this._level === "simple") {
                 const displayText = (message as ConversationResponse).displayText
                 if (displayText) {
                     displayText.forEach((text: string) => {
