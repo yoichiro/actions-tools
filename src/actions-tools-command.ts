@@ -3,13 +3,14 @@ import {Interactive} from "./interactive"
 import {Setup} from "./setup"
 import {Conversation} from "./conversation"
 import * as fs from "fs"
+import {Autopilot} from "./autopilot"
 
 export class ActionsToolsCommand {
 
     main(): void {
         const def = this._createArgumentsDefinition()
         const args = def.argv
-        const isValidCommandName = ["interactive", "setup"].some((x: string): boolean => {
+        const isValidCommandName = ["interactive", "setup", "autopilot"].some((x: string): boolean => {
             return x === args._[0]
         })
         if (args._.length === 0 || !isValidCommandName) {
@@ -70,6 +71,37 @@ export class ActionsToolsCommand {
                     args.level,
                 )
             })
+            .command("autopilot", "Autopilot mode", (yargs: yargs.Argv) => {
+                return yargs
+                    .usage("Usage: actions-tools autopilot [Options]")
+                    .example("actions-tests autopilot",
+                        "")
+                    .option("input", {
+                        alias: "i",
+                        description: "Your conversation definition input file path",
+                        type: "string",
+                        demandOption: true,
+                    })
+                    .option("credential", {
+                        alias: "c",
+                        description: "Your credential file path",
+                        default: "./credentials.json",
+                        type: "string",
+                    })
+                    .option("level", {
+                        alias: "v",
+                        description: "Output level (simple, debug)",
+                        default: "simple",
+                        type: "string",
+                        choices: ["simple", "debug"],
+                    })
+            }, async (args: yargs.Arguments) => {
+                await this._startAutopilot(
+                    args.input,
+                    args.credential,
+                    args.level,
+                )
+            })
             .fail((msg: string, err: Error) => {
                 this._onFail(msg || err.message)
             })
@@ -88,7 +120,8 @@ export class ActionsToolsCommand {
     _createInteractive(credential: string,
                        locale: string,
                        level: string): Interactive {
-        const conversation = new Conversation(locale, require(fs.realpathSync(credential)))
+        const conversation = new Conversation(require(fs.realpathSync(credential)))
+        conversation.locale = locale
         const interactive = new Interactive(conversation, level)
         return interactive
     }
@@ -103,6 +136,20 @@ export class ActionsToolsCommand {
             secret,
             output,
         })
+    }
+
+    async _startAutopilot(input: string,
+                          credential: string,
+                          level: string): Promise<void> {
+        const autopilot = this._createAutopilot(input, credential, level)
+        await autopilot.start()
+    }
+
+    _createAutopilot(input: string,
+                     credential: string,
+                     level: string): Autopilot {
+        const conversation = new Conversation(require(fs.realpathSync(credential)))
+        return new Autopilot(conversation, input, level)
     }
 
     _onFail(message: string): void {

@@ -1,15 +1,11 @@
-import * as fs from "fs"
 import * as readline from "readline"
-import {Conversation, ConversationResponse} from "./conversation"
+import {Conversation} from "./conversation"
+import {AbstractCommand} from "./abstract-command"
 
-export class Interactive {
-
-    _conversation: Conversation
-    _level: string
+export class Interactive extends AbstractCommand {
 
     constructor(conversation: Conversation, level: string) {
-        this._conversation = conversation
-        this._level = level
+        super(conversation, level)
     }
 
     async start(): Promise<void> {
@@ -29,27 +25,6 @@ export class Interactive {
                 `Conversation aborted: ${e.toString()}`,
             ])
         }
-    }
-
-    _createConversation(credential: string, locale: string): Conversation {
-        return new Conversation(locale, require(fs.realpathSync(credential)))
-    }
-
-    _output(messages: (string | ConversationResponse)[]): void {
-        messages.forEach((message: string | ConversationResponse) => {
-            if (message instanceof Object && this._level === "simple") {
-                const displayText = (message as ConversationResponse).displayText
-                if (displayText) {
-                    displayText.forEach((text: string) => {
-                        console.log(text)
-                    })
-                } else {
-                    console.log("(no response)")
-                }
-            } else {
-                console.log(message)
-            }
-        })
     }
 
     async _dialogue(): Promise<void> {
@@ -88,16 +63,6 @@ export class Interactive {
                 rl.close()
                 resolve(answer)
             })
-        })
-    }
-
-    async _send(phrase: string): Promise<ConversationResponse> {
-        return new Promise<ConversationResponse>(async (resolve, reject) => {
-            try {
-                resolve(await this._conversation.say(phrase))
-            } catch(e) {
-                reject(e)
-            }
         })
     }
 

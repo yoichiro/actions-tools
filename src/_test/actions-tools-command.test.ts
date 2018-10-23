@@ -55,3 +55,22 @@ test("When interactive specified", t => {
     subjectMock.verify()
     t.is(interactiveSpy.calledOnce, true)
 })
+
+test("When autopilot specified", t => {
+    const subject = new ActionsToolsCommand()
+
+    const autopilot = {start: () => {}}
+    const autopilotSpy = sinon.spy(autopilot, "start")
+    const subjectMock = sinon.mock(subject)
+    subjectMock
+        .expects("_createAutopilot")
+        .withArgs("./input1.yml", "./credentials1.json", "debug")
+        .returns(autopilot)
+
+    process.argv = ["node", "main.js", "autopilot", "--input", "./input1.yml", "--credential", "./credentials1.json", "--level", "debug"]
+
+    subject.main()
+
+    subjectMock.verify()
+    t.is(autopilotSpy.calledOnce, true)
+})

@@ -35,14 +35,15 @@ const createAssistantMock = (data: any) => {
 }
 
 test.serial("Simple dialog", t => {
-    const action = new Conversation("en-US", tokenInfo)
-    const mockResponse = sinon.stub(action._assistant, "assist")
+    const conversation = new Conversation(tokenInfo)
+    conversation.locale = "en-US"
+    const mockResponse = sinon.stub(conversation._assistant, "assist")
     mockResponse.callsFake(() => {
         const conversation = createAssistantMock(TestData.BASIC_ASSISTANT_RESPONSE)
         return conversation
     })
 
-    return action.say("")
+    return conversation.say("")
         .then((response: ConversationResponse) => {
             t.deepEqual(response, TestData.BASIC_CONVERSATION_RESPONSE)
             mockResponse.restore()

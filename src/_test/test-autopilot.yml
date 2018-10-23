@@ -1,0 +1,6 @@
+locale: en-US
+dialogs:
+  -
+    phrase: "Hello"
+  -
+    phrase: "How is the weather today?"

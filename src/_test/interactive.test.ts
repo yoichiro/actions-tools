@@ -5,9 +5,9 @@ import {Conversation, ConversationResponse} from "../conversation"
 
 test("When the assistant immediately returns no response", async t => {
     const conversation = new Conversation(
-        "en-US",
         require(__dirname + "/../../src/_test/test-credentials.json"),
     )
+    conversation.locale = "en-US"
     const interactive = new Interactive(conversation,"full")
     const mockConversation = sinon.mock(interactive._conversation)
     mockConversation

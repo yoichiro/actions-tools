@@ -63,11 +63,14 @@ export class Conversation {
     _previousConversationState: Uint8Array
 
     constructor(
-        locale: string,
         tokenInfo: TokenInfo,
     ) {
-        this._locale = locale
+        this.locale = "en-US"
         this._assistant = this._createAssistant(tokenInfo)
+    }
+
+    set locale(locale: string) {
+        this._locale = locale
     }
 
     _createAssistant(tokenInfo: TokenInfo) {
