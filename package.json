@@ -1,6 +1,6 @@
 {
   "name": "actions-tools",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "This provides some useful tools to build your actions for Google Assistant.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
