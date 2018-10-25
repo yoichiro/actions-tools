@@ -1,7 +1,7 @@
 [![CircleCI](https://circleci.com/gh/yoichiro/actions-tools.svg?style=svg)](https://circleci.com/gh/yoichiro/actions-tools)
 [![NPM Version](https://img.shields.io/npm/v/actions-tools.svg)](https://www.npmjs.org/package/actions-tools)
 
-# What's This
+# actions-tools
 
 This provides you some useful tools to build your actions for the Google Assistant. Currently, the following tools provided:
 
