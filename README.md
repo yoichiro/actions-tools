@@ -9,6 +9,8 @@ This provides you some useful tools to build your actions for the Google Assista
 * interactive - This tool provides you to do a conversation between the Google Assistant and you in your terminal.
 * autopilot - This tool allows you to talk with the Google Assistant automatically with phrases you prepared in advance.
 
+![interactive](https://user-images.githubusercontent.com/261787/47473717-b6c1c100-d84e-11e8-824f-d087f06d1e73.png)
+
 # How to Install
 
 Install this with either `npm install actions-tools -g` or `yarn global add actions-tools`.
@@ -103,6 +105,8 @@ The interactive tool can accept the following options:
 * `-l` or `--locale` - The locale used during conversation with the Google Assistant. If omitted, the `en-US` is applied.
 * `-v` or `--level` - The output level. You can specify either `simple` and `debug`. If the `simple` selected, `displayText` strings will be outputted. Otherwise, all structures that consists of the response from the Google Assistant will be outputted. If omitted, the `simple` is applied.
 
+![debug](https://user-images.githubusercontent.com/261787/47474464-fb029080-d851-11e8-96c9-2f98c027acaa.png)
+
 The interactive tool asks you the phrase you want to send to the Google Assistant. When you types the phrase and press Enter key, the phrase is sent to the Google Assistant. After a few seconds, the response from the Google Assistant will be shown. Then, the interactive tool asks your input again.
 
 If you want to exit from the interactive tool, press `Ctrl+C` key.
@@ -149,6 +153,8 @@ The interactive tool can accept the following options:
 * `-v` or `--level` - The output level. You can specify either `simple` and `debug`. If the `simple` selected, `displayText` strings will be outputted. Otherwise, all structures that consists of the response from the Google Assistant will be outputted. If omitted, the `simple` is applied.
 
 The autopilot tool reads the content of your dialog file and sends each phrase. You will see each response from the Google Assistant.
+
+![autopilot](https://user-images.githubusercontent.com/261787/47474541-65b3cc00-d852-11e8-8abc-5a7f4dc822ca.png)
 
 # License
 
