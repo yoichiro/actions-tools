@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/yoichiro/actions-tools.svg?style=svg)](https://circleci.com/gh/yoichiro/actions-tools)
+[![NPM Version](https://img.shields.io/npm/v/actions-tools.svg)](https://www.npmjs.org/package/actions-tools)
 
 # What's This
 

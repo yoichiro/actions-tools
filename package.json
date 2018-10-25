@@ -1,11 +1,27 @@
 {
   "name": "actions-tools",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "This provides some useful tools to build your actions for Google Assistant.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "author": "Yoichiro Tanaka",
+  "author": {
+    "name": "Yoichiro Tanaka",
+    "email": "yoichiro6642@gmail.com",
+    "url": "https://github.com/yoichiro)"
+  },
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yoichiro/actions-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yoichiro/actions-tools/issues",
+    "email": "yoichiro6642@gmail.com"
+  },
+  "homepage": "https://github.com/yoichiro/actions-tools.git",
+  "keywords": [
+    "cli", "terminal", "console", "google assistant", "actions on google"
+  ],
   "bin": {
     "actions-tools": "./dist/main.js"
   },
@@ -13,7 +29,8 @@
     "clean": "rm -rf dist",
     "lint": "tslint -p .",
     "build": "tsc",
-    "test": "yarn clean && yarn lint && yarn build && nyc ava dist/_test/*.test.js"
+    "test": "yarn clean && yarn lint && yarn build && nyc ava dist/_test/*.test.js",
+    "release": "yarn clean && yarn lint && yarn build && yarn test && yarn publish"
   },
   "devDependencies": {
     "@types/sinon": "^5.0.5",
@@ -38,6 +55,5 @@
     "js-yaml": "^3.12.0",
     "ora": "^3.0.0",
     "yargs": "^12.0.2"
-  },
-  "private": true
+  }
 }
