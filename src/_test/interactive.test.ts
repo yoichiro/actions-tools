@@ -8,7 +8,7 @@ test("When the assistant immediately returns no response", async t => {
         require(__dirname + "/../../src/_test/test-credentials.json"),
     )
     conversation.locale = "en-US"
-    const interactive = new Interactive(conversation,"full")
+    const interactive = new Interactive(conversation,"full", "both", "./path1")
     const mockConversation = sinon.mock(interactive._conversation)
     mockConversation
         .expects("say")
@@ -17,7 +17,11 @@ test("When the assistant immediately returns no response", async t => {
             return new Promise<ConversationResponse>((resolve, reject) => {
                 const conversationResponse: ConversationResponse = {
                     expectUserResponse: false,
-                    displayText: [],
+                    displayText: ["abc1"],
+                    screenOut: {
+                        format: 1,
+                        data: "html1",
+                    },
                 }
                 resolve(conversationResponse)
             })
@@ -42,7 +46,13 @@ test("When the assistant immediately returns no response", async t => {
     mockInteractive
         .expects("_output")
         .once()
-        .withArgs(["", sinon.match.object, ""])
+        .withArgs(["", sinon.match({
+            displayText: ["abc1"],
+            screenOut: {
+                format: 1,
+                data: "html1",
+            },
+        }), ""])
     mockInteractive
         .expects("_output")
         .once()

@@ -20,7 +20,11 @@
   },
   "homepage": "https://github.com/yoichiro/actions-tools.git",
   "keywords": [
-    "cli", "terminal", "console", "google assistant", "actions on google"
+    "cli",
+    "terminal",
+    "console",
+    "google assistant",
+    "actions on google"
   ],
   "bin": {
     "actions-tools": "./dist/main.js"
@@ -53,6 +57,7 @@
     "googleapis": "^34.0.0",
     "grpc": "^1.15.1",
     "js-yaml": "^3.12.0",
+    "opn": "^5.4.0",
     "ora": "^3.0.0",
     "yargs": "^12.0.2"
   }

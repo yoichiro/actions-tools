@@ -104,12 +104,24 @@ The interactive tool can accept the following options:
 * `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `./credentials.json` is applied.
 * `-l` or `--locale` - The locale used during conversation with the Google Assistant. If omitted, the `en-US` is applied.
 * `-v` or `--level` - The output level. You can specify either `simple` and `debug`. If the `simple` selected, `displayText` strings will be outputted. Otherwise, all structures that consists of the response from the Google Assistant will be outputted. If omitted, the `simple` is applied.
+* `-s` or `--screen` - If you want to support the screen surface in addition to the audio, you can use this option. You can specify either `off`, `open`, `file` and `full`. If omitted, the `off` is applied.
+  * `off` - Not support the screen surface.
+  * `open` - Open the screen out data with your Web browser (Actually, the response data is passed to the `open` command).
+  * `file` - Save the response data to the file in the specified directory by the `-o` option.
+  * `full` - Both `open` and `file`.
+* `-o` - This option is required when the `-s` option is specified and the value is `file` or `full`. You can specify the directory path where each response screen out data is written as a file. If omitted, the `./` value is applied.
 
 ![debug](https://user-images.githubusercontent.com/261787/47474464-fb029080-d851-11e8-96c9-2f98c027acaa.png)
 
 The interactive tool asks you the phrase you want to send to the Google Assistant. When you types the phrase and press Enter key, the phrase is sent to the Google Assistant. After a few seconds, the response from the Google Assistant will be shown. Then, the interactive tool asks your input again.
 
 If you want to exit from the interactive tool, press `Ctrl+C` key.
+
+You can see each response for the screen surface, if you specify the `-s` option. Using the `open` value for the `-s` option, you can see each response in your Web browser in realtime.
+
+![screen_surface_open](https://user-images.githubusercontent.com/261787/47600241-21166500-d9f9-11e8-8f16-b0d5708e610c.png)
+
+In the other hand, using the `file` value for the `-s` option, you can save each response data as a file into the directory you specify with the `-o` option.
 
 # How to use: autopilot
 
@@ -151,6 +163,12 @@ The interactive tool can accept the following options:
 * `-i` or `--input` - The file path of your dialog file. Required.
 * `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `./credentials.json` is applied.
 * `-v` or `--level` - The output level. You can specify either `simple` and `debug`. If the `simple` selected, `displayText` strings will be outputted. Otherwise, all structures that consists of the response from the Google Assistant will be outputted. If omitted, the `simple` is applied.
+* `-s` or `--screen` - If you want to support the screen surface in addition to the audio, you can use this option. You can specify either `off`, `open`, `file` and `full`. If omitted, the `off` is applied.
+  * `off` - Not support the screen surface.
+  * `open` - Open the screen out data with your Web browser (Actually, the response data is passed to the `open` command).
+  * `file` - Save the response data to the file in the specified directory by the `-o` option.
+  * `full` - Both `open` and `file`.
+* `-o` - This option is required when the `-s` option is specified and the value is `file` or `full`. You can specify the directory path where each response screen out data is written as a file. If omitted, the `./` value is applied.
 
 The autopilot tool reads the content of your dialog file and sends each phrase. You will see each response from the Google Assistant.
 

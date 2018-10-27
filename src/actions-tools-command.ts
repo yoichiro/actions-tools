@@ -64,12 +64,28 @@ export class ActionsToolsCommand {
                         type: "string",
                         choices: ["simple", "debug"],
                     })
+                    .option("screen", {
+                        alias: "s",
+                        description: "Screen model (off, open, file, full)",
+                        type: "string",
+                        choices: ["off", "open", "file", "full"],
+                        default: "off",
+                    })
+                    .option("screen-output", {
+                        alias: "o",
+                        description: "Output directory path for screen out data",
+                        default: "./",
+                        type: "string",
+                    })
             }, async (args: yargs.Arguments) => {
                 await this._startInteraction(
                     args.credential,
                     args.locale,
                     args.level,
+                    args.screen,
+                    args["screen-output"],
                 )
+                this._exit()
             })
             .command("autopilot", "Autopilot mode", (yargs: yargs.Argv) => {
                 return yargs
@@ -95,12 +111,28 @@ export class ActionsToolsCommand {
                         type: "string",
                         choices: ["simple", "debug"],
                     })
+                    .option("screen", {
+                        alias: "s",
+                        description: "Screen model (off, open, file, full)",
+                        type: "string",
+                        choices: ["off", "open", "file", "full"],
+                        default: "off",
+                    })
+                    .option("screen-output", {
+                        alias: "o",
+                        description: "Output directory path for screen out data",
+                        default: "./",
+                        type: "string",
+                    })
             }, async (args: yargs.Arguments) => {
                 await this._startAutopilot(
                     args.input,
                     args.credential,
                     args.level,
+                    args.screen,
+                    args["screen-output"],
                 )
+                this._exit()
             })
             .fail((msg: string, err: Error) => {
                 this._onFail(msg || err.message)
@@ -110,19 +142,28 @@ export class ActionsToolsCommand {
             .wrap(yargs.terminalWidth())
     }
 
+    _exit(): void {
+        process.exit(0)
+    }
+
     async _startInteraction(credential: string,
                             locale: string,
-                            level: string): Promise<void> {
-        const interactive = this._createInteractive(credential, locale, level)
+                            level: string,
+                            screen: string,
+                            screenOutput: string): Promise<void> {
+        const interactive = this._createInteractive(credential, locale, level, screen, screenOutput)
         await interactive.start()
     }
 
     _createInteractive(credential: string,
                        locale: string,
-                       level: string): Interactive {
+                       level: string,
+                       screen: string,
+                       screenOutput: string): Interactive {
         const conversation = new Conversation(require(fs.realpathSync(credential)))
         conversation.locale = locale
-        const interactive = new Interactive(conversation, level)
+        conversation.screenSupport = screen !== "off"
+        const interactive = new Interactive(conversation, level, screen, screenOutput)
         return interactive
     }
 
@@ -140,16 +181,21 @@ export class ActionsToolsCommand {
 
     async _startAutopilot(input: string,
                           credential: string,
-                          level: string): Promise<void> {
-        const autopilot = this._createAutopilot(input, credential, level)
+                          level: string,
+                          screen: string,
+                          screenOutput: string): Promise<void> {
+        const autopilot = this._createAutopilot(input, credential, level, screen, screenOutput)
         await autopilot.start()
     }
 
     _createAutopilot(input: string,
                      credential: string,
-                     level: string): Autopilot {
+                     level: string,
+                     screen: string,
+                     screenOutput: string): Autopilot {
         const conversation = new Conversation(require(fs.realpathSync(credential)))
-        return new Autopilot(conversation, input, level)
+        conversation.screenSupport = screen !== "off"
+        return new Autopilot(conversation, input, level, screen, screenOutput)
     }
 
     _onFail(message: string): void {

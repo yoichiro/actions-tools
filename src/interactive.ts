@@ -4,27 +4,30 @@ import {AbstractCommand} from "./abstract-command"
 
 export class Interactive extends AbstractCommand {
 
-    constructor(conversation: Conversation, level: string) {
-        super(conversation, level)
+    constructor(conversation: Conversation, level: string, screen: string, screenOutput: string) {
+        super(conversation, level, screen, screenOutput)
     }
 
     async start(): Promise<void> {
-        this._output([
-            "Interactive mode started. If you want to exit, press Ctrl+C",
-            "",
-        ])
-        try {
-            await this._dialogue()
-        } catch(e) {
-            try {
-                await this._send("cancel")
-            } catch(_) {
-            }
+        return new Promise<void>(async (resolve, reject) => {
             this._output([
+                "Interactive mode started. If you want to exit, press Ctrl+C",
                 "",
-                `Conversation aborted: ${e.toString()}`,
             ])
-        }
+            try {
+                await this._dialogue()
+            } catch(e) {
+                try {
+                    await this._send("cancel")
+                } catch(_) {
+                }
+                this._output([
+                    "",
+                    `Conversation aborted: ${e.toString()}`,
+                ])
+            }
+            resolve()
+        })
     }
 
     async _dialogue(): Promise<void> {

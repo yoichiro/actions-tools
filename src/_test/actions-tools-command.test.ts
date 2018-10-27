@@ -45,10 +45,22 @@ test("When interactive specified", t => {
     const subjectMock = sinon.mock(subject)
     subjectMock
         .expects("_createInteractive")
-        .withArgs("./credentials1.json", "ja-JP", "debug")
+        .withArgs("./credentials1.json", "ja-JP", "debug", "off", "./path1")
         .returns(interactive)
+    const exitStub = sinon.stub(subject, "_exit")
+    exitStub
+        .callsFake(() => {
+        })
 
-    process.argv = ["node", "main.js", "interactive", "--locale", "ja-JP", "--credential", "./credentials1.json", "--level", "debug"]
+    process.argv = [
+        "node", "main.js",
+        "interactive",
+        "--locale", "ja-JP",
+        "--credential", "./credentials1.json",
+        "--level", "debug",
+        "--screen", "off",
+        "--screen-output", "./path1",
+    ]
 
     subject.main()
 
@@ -64,10 +76,22 @@ test("When autopilot specified", t => {
     const subjectMock = sinon.mock(subject)
     subjectMock
         .expects("_createAutopilot")
-        .withArgs("./input1.yml", "./credentials1.json", "debug")
+        .withArgs("./input1.yml", "./credentials1.json", "debug", "full", "./path1")
         .returns(autopilot)
+    const exitStub = sinon.stub(subject, "_exit")
+    exitStub
+        .callsFake(() => {
+        })
 
-    process.argv = ["node", "main.js", "autopilot", "--input", "./input1.yml", "--credential", "./credentials1.json", "--level", "debug"]
+    process.argv = [
+        "node", "main.js",
+        "autopilot",
+        "--input", "./input1.yml",
+        "--credential", "./credentials1.json",
+        "--level", "debug",
+        "--screen", "full",
+        "--screen-output", "./path1",
+    ]
 
     subject.main()
 
