@@ -10,6 +10,7 @@ import {
     RichResponse, Suggestion,
     TableCard,
 } from "./conversation-protocol"
+import * as te from "text-encoding"
 
 const googleProtoFiles = require("google-proto-files")
 const grpc = require("grpc")
@@ -41,7 +42,8 @@ export interface ConversationResponse {
     screenOut?: {
         format: number,
         data: string,
-    }
+    },
+    audioOut?: Uint8Array[],
 }
 
 const packageDefinition = protoLoader.loadSync(
@@ -128,12 +130,24 @@ export class Conversation {
         this._handleDeviceAction(data, response)
         this._handleDebugInfo(data, response)
         this._handleScreenOut(data, response)
+        this._handleAudioOut(data, response)
+    }
+
+    _handleAudioOut(data: AssistResponse, response: ConversationResponse): void {
+        if (data.audio_out) {
+            if (!response.audioOut) {
+                response.audioOut = [data.audio_out.audio_data]
+            } else {
+                response.audioOut.push(data.audio_out.audio_data)
+            }
+        }
     }
 
     _handleScreenOut(data: AssistResponse, response: ConversationResponse): void {
         if (data.screen_out) {
             if (data.screen_out.format === 1) { // HTML
-                const html = Buffer.from(data.screen_out.data!.buffer).toString()
+                // const html = Buffer.from(data.screen_out.data!.buffer).toString()
+                const html = new te.TextDecoder("utf-8").decode(data.screen_out.data!)
                 response.screenOut = {
                     format: data.screen_out.format,
                     data: html,
@@ -368,7 +382,7 @@ export class Conversation {
 
     _configureAudioOutConfig(config: AssistConfig): void {
         config.audio_out_config = {
-            encoding: 1, // LINEAR16
+            encoding: 2, // MP3
             sample_rate_hertz: 16000,
             volume_percentage: 100,
         }

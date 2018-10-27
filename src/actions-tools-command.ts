@@ -66,14 +66,21 @@ export class ActionsToolsCommand {
                     })
                     .option("screen", {
                         alias: "s",
-                        description: "Screen model (off, open, file, full)",
+                        description: "Screen surface (off, file, play)",
                         type: "string",
-                        choices: ["off", "open", "file", "full"],
+                        choices: ["off", "file", "play"],
                         default: "off",
                     })
-                    .option("screen-output", {
+                    .option("audio", {
+                        alias: "a",
+                        description: "Audio surface (off, file, play)",
+                        type: "string",
+                        choices: ["off", "file", "play"],
+                        default: "off",
+                    })
+                    .option("output", {
                         alias: "o",
-                        description: "Output directory path for screen out data",
+                        description: "Output directory path for screen/audio out data",
                         default: "./",
                         type: "string",
                     })
@@ -83,7 +90,8 @@ export class ActionsToolsCommand {
                     args.locale,
                     args.level,
                     args.screen,
-                    args["screen-output"],
+                    args.audio,
+                    args.output,
                 )
                 this._exit()
             })
@@ -113,14 +121,21 @@ export class ActionsToolsCommand {
                     })
                     .option("screen", {
                         alias: "s",
-                        description: "Screen model (off, open, file, full)",
+                        description: "Screen surface (off, file, play)",
                         type: "string",
-                        choices: ["off", "open", "file", "full"],
+                        choices: ["off", "file", "play"],
                         default: "off",
                     })
-                    .option("screen-output", {
+                    .option("audio", {
+                        alias: "a",
+                        description: "Audio surface (off, file, play)",
+                        type: "string",
+                        choices: ["off", "file", "play"],
+                        default: "off",
+                    })
+                    .option("output", {
                         alias: "o",
-                        description: "Output directory path for screen out data",
+                        description: "Output directory path for screen/audio out data",
                         default: "./",
                         type: "string",
                     })
@@ -130,7 +145,8 @@ export class ActionsToolsCommand {
                     args.credential,
                     args.level,
                     args.screen,
-                    args["screen-output"],
+                    args.audio,
+                    args.output,
                 )
                 this._exit()
             })
@@ -150,8 +166,9 @@ export class ActionsToolsCommand {
                             locale: string,
                             level: string,
                             screen: string,
-                            screenOutput: string): Promise<void> {
-        const interactive = this._createInteractive(credential, locale, level, screen, screenOutput)
+                            audio: string,
+                            output: string): Promise<void> {
+        const interactive = this._createInteractive(credential, locale, level, screen, audio, output)
         await interactive.start()
     }
 
@@ -159,11 +176,12 @@ export class ActionsToolsCommand {
                        locale: string,
                        level: string,
                        screen: string,
-                       screenOutput: string): Interactive {
+                       audio: string,
+                       output: string): Interactive {
         const conversation = new Conversation(require(fs.realpathSync(credential)))
         conversation.locale = locale
         conversation.screenSupport = screen !== "off"
-        const interactive = new Interactive(conversation, level, screen, screenOutput)
+        const interactive = new Interactive(conversation, level, screen, audio, output)
         return interactive
     }
 
@@ -183,8 +201,9 @@ export class ActionsToolsCommand {
                           credential: string,
                           level: string,
                           screen: string,
-                          screenOutput: string): Promise<void> {
-        const autopilot = this._createAutopilot(input, credential, level, screen, screenOutput)
+                          audio: string,
+                          output: string): Promise<void> {
+        const autopilot = this._createAutopilot(input, credential, level, screen, audio, output)
         await autopilot.start()
     }
 
@@ -192,10 +211,11 @@ export class ActionsToolsCommand {
                      credential: string,
                      level: string,
                      screen: string,
-                     screenOutput: string): Autopilot {
+                     audio: string,
+                     output: string): Autopilot {
         const conversation = new Conversation(require(fs.realpathSync(credential)))
         conversation.screenSupport = screen !== "off"
-        return new Autopilot(conversation, input, level, screen, screenOutput)
+        return new Autopilot(conversation, input, level, screen, audio, output)
     }
 
     _onFail(message: string): void {

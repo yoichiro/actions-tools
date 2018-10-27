@@ -45,7 +45,7 @@ test("When interactive specified", t => {
     const subjectMock = sinon.mock(subject)
     subjectMock
         .expects("_createInteractive")
-        .withArgs("./credentials1.json", "ja-JP", "debug", "off", "./path1")
+        .withArgs("./credentials1.json", "ja-JP", "debug", "off", "play", "./path1")
         .returns(interactive)
     const exitStub = sinon.stub(subject, "_exit")
     exitStub
@@ -59,7 +59,8 @@ test("When interactive specified", t => {
         "--credential", "./credentials1.json",
         "--level", "debug",
         "--screen", "off",
-        "--screen-output", "./path1",
+        "--audio", "play",
+        "--output", "./path1",
     ]
 
     subject.main()
@@ -76,7 +77,7 @@ test("When autopilot specified", t => {
     const subjectMock = sinon.mock(subject)
     subjectMock
         .expects("_createAutopilot")
-        .withArgs("./input1.yml", "./credentials1.json", "debug", "full", "./path1")
+        .withArgs("./input1.yml", "./credentials1.json", "debug", "play", "file", "./path1")
         .returns(autopilot)
     const exitStub = sinon.stub(subject, "_exit")
     exitStub
@@ -89,8 +90,9 @@ test("When autopilot specified", t => {
         "--input", "./input1.yml",
         "--credential", "./credentials1.json",
         "--level", "debug",
-        "--screen", "full",
-        "--screen-output", "./path1",
+        "--screen", "play",
+        "--audio", "file",
+        "--output", "./path1",
     ]
 
     subject.main()

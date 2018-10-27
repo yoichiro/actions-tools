@@ -12,7 +12,8 @@ test("When the assistant immediately returns no response", async t => {
         conversation,
         __dirname + "/../../src/_test/test-autopilot.yml",
         "simple",
-        "both",
+        "play",
+        "file",
         "./path1")
     const mockConversation = sinon.mock(autopilot._conversation)
     mockConversation

@@ -45,7 +45,9 @@ export interface AssistRequest {
 
 export interface AssistResponse {
     event_type?: number,
-    audio_out?: Uint8Array,
+    audio_out?: {
+        audio_data: Uint8Array,
+    },
     screen_out?: {
         format?: number,
         data?: Uint8Array,

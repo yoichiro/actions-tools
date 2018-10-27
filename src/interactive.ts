@@ -4,8 +4,8 @@ import {AbstractCommand} from "./abstract-command"
 
 export class Interactive extends AbstractCommand {
 
-    constructor(conversation: Conversation, level: string, screen: string, screenOutput: string) {
-        super(conversation, level, screen, screenOutput)
+    constructor(conversation: Conversation, level: string, screen: string, audio: string, output: string) {
+        super(conversation, level, screen, audio, output)
     }
 
     async start(): Promise<void> {
