@@ -14,8 +14,8 @@ export class Autopilot extends AbstractCommand {
 
     _input: any
 
-    constructor(conversation: Conversation, input: string, level: string) {
-        super(conversation, level)
+    constructor(conversation: Conversation, input: string, level: string, screen: string, screenOutput: string) {
+        super(conversation, level, screen, screenOutput)
         this._input = input
     }
 

@@ -84,4 +84,8 @@ export const BASIC_CONVERSATION_RESPONSE = {
             intent: "actions.intent.TEXT",
         },
     ],
+    screenOut: {
+        format: 1,
+        data: "abc123",
+    },
 }

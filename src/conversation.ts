@@ -38,6 +38,10 @@ export interface ConversationResponse {
     linkOutSuggestion?: LinkOutSuggestion,
     possibleIntents?: ExpectedIntent[],
     responseMetadata?: any,
+    screenOut?: {
+        format: number,
+        data: string,
+    }
 }
 
 const packageDefinition = protoLoader.loadSync(
@@ -61,16 +65,24 @@ export class Conversation {
     _assistant: any
     _locale: string
     _previousConversationState: Uint8Array
+    _screenSupport: boolean
+    _newConversation: boolean
 
     constructor(
         tokenInfo: TokenInfo,
     ) {
         this.locale = "en-US"
+        this._screenSupport = false
+        this._newConversation = true
         this._assistant = this._createAssistant(tokenInfo)
     }
 
     set locale(locale: string) {
         this._locale = locale
+    }
+
+    set screenSupport(screenSupport: boolean) {
+        this._screenSupport = screenSupport
     }
 
     _createAssistant(tokenInfo: TokenInfo) {
@@ -88,7 +100,8 @@ export class Conversation {
     say(userPhrase: string): Promise<ConversationResponse> {
         const assistConfig = this._createAssistConfig()
         this._setLocale(assistConfig, this._locale)
-        this._setIsNewConversation(assistConfig, false)
+        this._setIsNewConversation(assistConfig, this._newConversation)
+        this._newConversation = false
         this._setUserPhrase(assistConfig, userPhrase)
         const assistRequest = this._createAssistRequest(assistConfig)
         const conversation = this._assistant.assist()
@@ -114,6 +127,19 @@ export class Conversation {
         this._handleDialogStateOut(data, response)
         this._handleDeviceAction(data, response)
         this._handleDebugInfo(data, response)
+        this._handleScreenOut(data, response)
+    }
+
+    _handleScreenOut(data: AssistResponse, response: ConversationResponse): void {
+        if (data.screen_out) {
+            if (data.screen_out.format === 1) { // HTML
+                const html = Buffer.from(data.screen_out.data!.buffer).toString()
+                response.screenOut = {
+                    format: data.screen_out.format,
+                    data: html,
+                }
+            }
+        }
     }
 
     _handleDebugInfo(data: AssistResponse, response: ConversationResponse): void {
@@ -308,7 +334,16 @@ export class Conversation {
         this._configureDialogStateIn(config)
         this._configureDeviceConfig(config)
         this._configureDebugConfig(config)
+        this._configureScreenConfig(config)
         return config
+    }
+
+    _configureScreenConfig(config: AssistConfig): void {
+        if (this._screenSupport) {
+            config.screen_out_config = {
+                screen_mode: 3, // PLAYING
+            }
+        }
     }
 
     _configureDebugConfig(config: AssistConfig): void {
