@@ -14,7 +14,8 @@ test("When the assistant immediately returns no response", async t => {
         "simple",
         "play",
         "file",
-        "./path1")
+        "./path1",
+        false)
     const mockConversation = sinon.mock(autopilot._conversation)
     mockConversation
         .expects("say")
@@ -77,6 +78,10 @@ test("When the assistant immediately returns no response", async t => {
         .expects("_output")
         .once()
         .withArgs(["", sinon.match.object, ""])
+    mockAutopilot
+        .expects("_output")
+        .once()
+        .withArgs(["Autopilot mode finished."])
     await autopilot.start()
     mockAutopilot.verify()
     mockConversation.verify()

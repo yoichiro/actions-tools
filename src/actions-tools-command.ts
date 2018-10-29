@@ -84,6 +84,12 @@ export class ActionsToolsCommand {
                         default: "./",
                         type: "string",
                     })
+                    .option("rich", {
+                        alias: "r",
+                        description: "Rich output (color and emoji)",
+                        default: true,
+                        type: "boolean",
+                    })
             }, async (args: yargs.Arguments) => {
                 await this._startInteraction(
                     args.credential,
@@ -92,6 +98,7 @@ export class ActionsToolsCommand {
                     args.screen,
                     args.audio,
                     args.output,
+                    args.rich,
                 )
                 this._exit()
             })
@@ -139,6 +146,12 @@ export class ActionsToolsCommand {
                         default: "./",
                         type: "string",
                     })
+                    .option("rich", {
+                        alias: "r",
+                        description: "Rich output (color and emoji)",
+                        default: true,
+                        type: "boolean",
+                    })
             }, async (args: yargs.Arguments) => {
                 await this._startAutopilot(
                     args.input,
@@ -147,6 +160,7 @@ export class ActionsToolsCommand {
                     args.screen,
                     args.audio,
                     args.output,
+                    args.rich,
                 )
                 this._exit()
             })
@@ -162,29 +176,6 @@ export class ActionsToolsCommand {
         process.exit(0)
     }
 
-    async _startInteraction(credential: string,
-                            locale: string,
-                            level: string,
-                            screen: string,
-                            audio: string,
-                            output: string): Promise<void> {
-        const interactive = this._createInteractive(credential, locale, level, screen, audio, output)
-        await interactive.start()
-    }
-
-    _createInteractive(credential: string,
-                       locale: string,
-                       level: string,
-                       screen: string,
-                       audio: string,
-                       output: string): Interactive {
-        const conversation = new Conversation(require(fs.realpathSync(credential)))
-        conversation.locale = locale
-        conversation.screenSupport = screen !== "off"
-        const interactive = new Interactive(conversation, level, screen, audio, output)
-        return interactive
-    }
-
     async _startSetup(secret: string, output: string): Promise<void> {
         const setup = this._createSetup(secret, output)
         await setup.start()
@@ -197,13 +188,39 @@ export class ActionsToolsCommand {
         })
     }
 
+    async _startInteraction(credential: string,
+                            locale: string,
+                            level: string,
+                            screen: string,
+                            audio: string,
+                            output: string,
+                            rich: boolean): Promise<void> {
+        const interactive = this._createInteractive(credential, locale, level, screen, audio, output, rich)
+        await interactive.start()
+    }
+
+    _createInteractive(credential: string,
+                       locale: string,
+                       level: string,
+                       screen: string,
+                       audio: string,
+                       output: string,
+                       rich: boolean): Interactive {
+        const conversation = new Conversation(require(fs.realpathSync(credential)))
+        conversation.locale = locale
+        conversation.screenSupport = screen !== "off"
+        const interactive = new Interactive(conversation, level, screen, audio, output, rich)
+        return interactive
+    }
+
     async _startAutopilot(input: string,
                           credential: string,
                           level: string,
                           screen: string,
                           audio: string,
-                          output: string): Promise<void> {
-        const autopilot = this._createAutopilot(input, credential, level, screen, audio, output)
+                          output: string,
+                          rich: boolean): Promise<void> {
+        const autopilot = this._createAutopilot(input, credential, level, screen, audio, output, rich)
         await autopilot.start()
     }
 
@@ -212,10 +229,11 @@ export class ActionsToolsCommand {
                      level: string,
                      screen: string,
                      audio: string,
-                     output: string): Autopilot {
+                     output: string,
+                     rich: boolean): Autopilot {
         const conversation = new Conversation(require(fs.realpathSync(credential)))
         conversation.screenSupport = screen !== "off"
-        return new Autopilot(conversation, input, level, screen, audio, output)
+        return new Autopilot(conversation, input, level, screen, audio, output, rich)
     }
 
     _onFail(message: string): void {

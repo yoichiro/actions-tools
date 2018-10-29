@@ -9,7 +9,7 @@ This provides you some useful tools to build your actions for the Google Assista
 * interactive - This tool provides you to do a conversation between the Google Assistant and you in your terminal.
 * autopilot - This tool allows you to talk with the Google Assistant automatically with phrases you prepared in advance.
 
-![interactive](https://user-images.githubusercontent.com/261787/47473717-b6c1c100-d84e-11e8-824f-d087f06d1e73.png)
+![interactive](https://user-images.githubusercontent.com/261787/47630450-310e8000-db84-11e8-99d7-e9b9c0cf3441.png)
 
 # How to Install
 
@@ -112,9 +112,10 @@ The interactive tool can accept the following options:
   * `off` - Do nothing.
   * `file` - Save the response data to the file in the specified directory by the `-o` option.
   * `play` - Not only `file`, but also play the audio out data (Actually, a command you have will be used to play the MP3 file. See [play-sound](https://github.com/shime/play-sound)).
-* `-o` - This option is required when the `-s` and/or `-a` option are specified and the value is `file` or `play`. You can specify the directory path where each response screen out data is written as a file. If omitted, the `./` value is applied.
+* `-o` or `--output` - This option is required when the `-s` and/or `-a` option are specified and the value is `file` or `play`. You can specify the directory path where each response screen out data is written as a file. If omitted, the `./` value is applied.
+* `-r` or `--rich` - Turn on/off the rich output (color and emoji). If omitted, the `true` is applied.
 
-![debug](https://user-images.githubusercontent.com/261787/47474464-fb029080-d851-11e8-96c9-2f98c027acaa.png)
+![debug](https://user-images.githubusercontent.com/261787/47630495-75018500-db84-11e8-9f8a-598eafe1d0b0.png)
 
 The interactive tool asks you the phrase you want to send to the Google Assistant. When you types the phrase and press Enter key, the phrase is sent to the Google Assistant. After a few seconds, the response from the Google Assistant will be shown. Then, the interactive tool asks your input again.
 
@@ -174,11 +175,12 @@ The interactive tool can accept the following options:
   * `off` - Do nothing.
   * `file` - Save the response data to the file in the specified directory by the `-o` option.
   * `play` - Not only `file`, but also play the audio out data (Actually, a command you have will be used to play the MP3 file. See [play-sound](https://github.com/shime/play-sound)).
-* `-o` - This option is required when the `-s` and/or `-a` option are specified and the value is `file` or `play`. You can specify the directory path where each response screen out data is written as a file. If omitted, the `./` value is applied.
+* `-o` or `--output` - This option is required when the `-s` and/or `-a` option are specified and the value is `file` or `play`. You can specify the directory path where each response screen out data is written as a file. If omitted, the `./` value is applied.
+* `-r` or `--rich` - Turn on/off the rich output (color and emoji). If omitted, the `true` is applied.
 
 The autopilot tool reads the content of your dialog file and sends each phrase. You will see each response from the Google Assistant.
 
-![autopilot](https://user-images.githubusercontent.com/261787/47474541-65b3cc00-d852-11e8-8abc-5a7f4dc822ca.png)
+![autopilot](https://user-images.githubusercontent.com/261787/47630550-c873d300-db84-11e8-8f7e-4f1afd5baced.png)
 
 # License
 

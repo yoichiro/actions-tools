@@ -3,6 +3,7 @@ import * as ora from "ora"
 import * as fs from "fs"
 import * as path from "path"
 import * as stringifyObject from "stringify-object"
+import {colors} from "./colors"
 
 const opn = require("opn")
 const player = require("play-sound")()
@@ -15,12 +16,13 @@ export abstract class AbstractCommand {
     _audio: string
     _outputDirectory: string
 
-    protected constructor(conversation: Conversation, level: string, screen: string, audio: string, output: string) {
+    protected constructor(conversation: Conversation, level: string, screen: string, audio: string, output: string, rich: boolean) {
         this._conversation = conversation
         this._level = level
         this._screen = screen
         this._audio = audio
         this._outputDirectory = output
+        colors.applyColor = rich
     }
 
     _outputAsText(message: string | ConversationResponse): void {
@@ -31,7 +33,7 @@ export abstract class AbstractCommand {
                     console.log(text)
                 })
             } else {
-                console.log("(no response)")
+                console.log(colors.system("(no response)"))
             }
         } else {
             if (message instanceof Object) {
@@ -47,16 +49,16 @@ export abstract class AbstractCommand {
                                     }).reduce((a: any, c: any) => {
                                         return a + c
                                     }, 0)
-                                return `(${totalLength} bytes)`
+                                return colors.system(`(${totalLength} bytes)`)
                             } else {
-                                return "(empty)"
+                                return colors.system("(empty)")
                             }
                         }
                         if (prop === "data") {
                             if (obj) {
-                                return `(${obj["data"].length} characters)`
+                                return colors.system(`(${obj["data"].length} characters)`)
                             } else {
-                                return `(empty)`
+                                return colors.system(`(empty)`)
                             }
                         }
                         return originalResult
@@ -75,7 +77,8 @@ export abstract class AbstractCommand {
                 if (this._screen === "file" || this._screen === "play") {
                     const filename = path.join(this._outputDirectory, `actions-tools-${Date.now()}.html`)
                     fs.writeFileSync(filename, screenOut.data)
-                    console.log(`(The HTML file of the screen_out.data created. ${filename})`)
+                    console.log("")
+                    console.log(colors.system(`The HTML file of the screen_out.data created. ${filename}`, "tv"))
                     if (this._screen === "play") {
                         opn(filename)
                     }
@@ -97,7 +100,8 @@ export abstract class AbstractCommand {
                             fs.appendFileSync(filename, audioData)
                         }
                     })
-                    console.log(`(The MP3 file of the audio_out.audio_data created. ${filename})`)
+                    console.log("")
+                    console.log(colors.system(`The MP3 file of the audio_out.audio_data created. ${filename}`, "mega"))
                     if (this._audio === "play") {
                         player.play(filename, (err: any) => {
                             if (err) {

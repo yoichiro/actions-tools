@@ -1,17 +1,18 @@
 import * as readline from "readline"
 import {Conversation} from "./conversation"
 import {AbstractCommand} from "./abstract-command"
+import {colors} from "./colors"
 
 export class Interactive extends AbstractCommand {
 
-    constructor(conversation: Conversation, level: string, screen: string, audio: string, output: string) {
-        super(conversation, level, screen, audio, output)
+    constructor(conversation: Conversation, level: string, screen: string, audio: string, output: string, rich: boolean) {
+        super(conversation, level, screen, audio, output, rich)
     }
 
     async start(): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
             this._output([
-                "Interactive mode started. If you want to exit, press Ctrl+C",
+                colors.system("Interactive mode started. If you want to exit, press Ctrl+C", "speaker"),
                 "",
             ])
             try {
@@ -19,11 +20,11 @@ export class Interactive extends AbstractCommand {
             } catch(e) {
                 try {
                     await this._send("cancel")
-                } catch(_) {
+                } catch (_) {
                 }
                 this._output([
                     "",
-                    `Conversation aborted: ${e.toString()}`,
+                    colors.system(`Conversation aborted: ${e.toString()}`, "sparkles"),
                 ])
             }
             resolve()
@@ -62,7 +63,7 @@ export class Interactive extends AbstractCommand {
                 console.log("")
                 reject("SIGINT")
             })
-            rl.question("> ", answer => {
+            rl.question(colors.prompt("> "), answer => {
                 rl.close()
                 resolve(answer)
             })

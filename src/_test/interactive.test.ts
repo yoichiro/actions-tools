@@ -8,7 +8,7 @@ test("When the assistant immediately returns no response", async t => {
         require(__dirname + "/../../src/_test/test-credentials.json"),
     )
     conversation.locale = "en-US"
-    const interactive = new Interactive(conversation,"full", "play", "file", "./path1")
+    const interactive = new Interactive(conversation,"full", "play", "file", "./path1", false)
     const mockConversation = sinon.mock(interactive._conversation)
     mockConversation
         .expects("say")
