@@ -5,10 +5,10 @@
 
 This provides you some useful tools to build your actions for the Google Assistant. Currently, the following tools provided:
 
-* setup - This tool allows you to set up your credential to work other tools.
-* interactive - This tool provides you to do a conversation between the Google Assistant and you in your terminal.
-* autopilot - This tool allows you to talk with the Google Assistant automatically with phrases you prepared in advance.
-* test - This tool allows you to test your action talking with the Google Assistant.
+* [setup](#how-to-use-setup) - This tool allows you to set up your credential to work other tools.
+* [interactive](#how-to-use-interactive) - This tool provides you to do a conversation between the Google Assistant and you in your terminal.
+* [autopilot](#how-to-use-autopilot) - This tool allows you to talk with the Google Assistant automatically with phrases you prepared in advance.
+* [test](#how-to-use-test) - This tool allows you to test your action talking with the Google Assistant.
 
 ![interactive](https://user-images.githubusercontent.com/261787/47630450-310e8000-db84-11e8-99d7-e9b9c0cf3441.png)
 
