@@ -4,13 +4,14 @@ import {Setup} from "./setup"
 import {Conversation} from "./conversation"
 import * as fs from "fs"
 import {Autopilot} from "./autopilot"
+import {Testing} from "./testing"
 
 export class ActionsToolsCommand {
 
     main(): void {
         const def = this._createArgumentsDefinition()
         const args = def.argv
-        const isValidCommandName = ["interactive", "setup", "autopilot"].some((x: string): boolean => {
+        const isValidCommandName = ["interactive", "setup", "autopilot", "test"].some((x: string): boolean => {
             return x === args._[0]
         })
         if (args._.length === 0 || !isValidCommandName) {
@@ -100,7 +101,7 @@ export class ActionsToolsCommand {
                     args.output,
                     args.rich,
                 )
-                this._exit()
+                this._exit(0)
             })
             .command("autopilot", "Autopilot mode", (yargs: yargs.Argv) => {
                 return yargs
@@ -162,7 +163,45 @@ export class ActionsToolsCommand {
                     args.output,
                     args.rich,
                 )
-                this._exit()
+                this._exit(0)
+            })
+            .command("test", "Test mode", (yargs: yargs.Argv) => {
+                return yargs
+                    .usage("Usage: actions-tools test [Options]")
+                    .example("actions-tests test",
+                        "")
+                    .option("credential", {
+                        alias: "c",
+                        description: "Your credential file path",
+                        default: "./credentials.json",
+                        type: "string",
+                    })
+                    .option("locale", {
+                        alias: "l",
+                        description: "Locale string",
+                        default: "en-US",
+                        type: "string",
+                    })
+                    .option("input", {
+                        alias: "i",
+                        description: "The directory or file path of the test target",
+                        default: "./",
+                        type: "string",
+                    })
+                    .option("report", {
+                        alias: "r",
+                        description: "Report format",
+                        default: "spec",
+                        type: "string",
+                    })
+            }, async (args: yargs.Arguments) => {
+                const exitCode = await this._startTesting(
+                    args.credential,
+                    args.locale,
+                    args.input,
+                    args.report,
+                )
+                this._exit(exitCode)
             })
             .fail((msg: string, err: Error) => {
                 this._onFail(msg || err.message)
@@ -172,8 +211,8 @@ export class ActionsToolsCommand {
             .wrap(yargs.terminalWidth())
     }
 
-    _exit(): void {
-        process.exit(0)
+    _exit(code: number): void {
+        process.exit(code)
     }
 
     async _startSetup(secret: string, output: string): Promise<void> {
@@ -234,6 +273,23 @@ export class ActionsToolsCommand {
         const conversation = new Conversation(require(fs.realpathSync(credential)))
         conversation.screenSupport = screen !== "off"
         return new Autopilot(conversation, input, level, screen, audio, output, rich)
+    }
+
+    async _startTesting(credential: string,
+                        locale: string,
+                        input: string,
+                        report: string): Promise<number> {
+        const testing = this._createTesting(credential, locale, input, report)
+        return await testing.start()
+    }
+
+    _createTesting(credential: string,
+                   locale: string,
+                   input: string,
+                   report: string): Testing {
+        const conversation = new Conversation(require(fs.realpathSync(credential)))
+        conversation.locale = locale
+        return Testing.createInstance(conversation, input, report)
     }
 
     _onFail(message: string): void {
