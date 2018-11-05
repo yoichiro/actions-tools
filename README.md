@@ -287,7 +287,7 @@ The interactive tool can accept the following options:
 
 If you specify the `-i` value as a directory path, all files with `test.js` suffix in the directory are executed.
 
-![test](https://user-images.githubusercontent.com/261787/47972277-0f5e4d00-e0de-11e8-9d85-736c9372a760.png)
+![2018-11-05 9 42 54](https://user-images.githubusercontent.com/261787/47972423-5dc01b80-e0df-11e8-92a9-737275431242.png)
 
 # License
 
