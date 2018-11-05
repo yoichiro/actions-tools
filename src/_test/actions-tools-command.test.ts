@@ -102,3 +102,33 @@ test("When autopilot specified", t => {
     subjectMock.verify()
     t.is(autopilotSpy.calledOnce, true)
 })
+
+test("When test specified", t => {
+    const subject = new ActionsToolsCommand()
+
+    const testing = {start: () => {}}
+    const testingSpy = sinon.spy(testing, "start")
+    const subjectMock = sinon.mock(subject)
+    subjectMock
+        .expects("_createTesting")
+        .withArgs("./credentials1.json", "ja-JP", "./tests", "spec")
+        .returns(testing)
+    const exitStub = sinon.stub(subject, "_exit")
+    exitStub
+        .callsFake(() => {
+        })
+
+    process.argv = [
+        "node", "main.js",
+        "test",
+        "--input", "./tests",
+        "--credential", "./credentials1.json",
+        "--locale", "ja-JP",
+        "--report", "spec",
+    ]
+
+    subject.main()
+
+    subjectMock.verify()
+    t.is(testingSpy.calledOnce, true)
+})

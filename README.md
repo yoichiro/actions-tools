@@ -8,6 +8,7 @@ This provides you some useful tools to build your actions for the Google Assista
 * setup - This tool allows you to set up your credential to work other tools.
 * interactive - This tool provides you to do a conversation between the Google Assistant and you in your terminal.
 * autopilot - This tool allows you to talk with the Google Assistant automatically with phrases you prepared in advance.
+* test - This tool allows you to test your action talking with the Google Assistant.
 
 ![interactive](https://user-images.githubusercontent.com/261787/47630450-310e8000-db84-11e8-99d7-e9b9c0cf3441.png)
 
@@ -89,7 +90,7 @@ In your Web browser, authenticate your Google Account and authorize an access to
 
 Back to your terminal, paste the authorization code. Then, the converted `credentials.json` file (or the file name you specified by the `-o` option) should be created.
 
-# How to use: interactive
+# How to Use: interactive
 
 The interactive tool allows you to talk to the Google Assistant in your terminal. When you're developing your action, you can talk to your action immediately.
 
@@ -127,7 +128,7 @@ In addition, using the `play` value for the `-s` option, you can see each respon
 
 ![screen_surface_open](https://user-images.githubusercontent.com/261787/47600241-21166500-d9f9-11e8-8f16-b0d5708e610c.png)
 
-# How to use: autopilot
+# How to Use: autopilot
 
 Basically, in the interactive tool described at the previous section, you need to type phrases each time. Therefore, you would need to type same phrases over again and again during testing your action. This is not a productive.
 
@@ -181,6 +182,112 @@ The interactive tool can accept the following options:
 The autopilot tool reads the content of your dialog file and sends each phrase. You will see each response from the Google Assistant.
 
 ![autopilot](https://user-images.githubusercontent.com/261787/47630550-c873d300-db84-11e8-8f7e-4f1afd5baced.png)
+
+# How to Use: test
+
+The test tool allows you to test your actions with [Mocha](https://mochajs.org/) testing framework. You can write your test code easily using the `Conversation` object, which is set up to communicate to the Google Assistant in advance.
+
+The test tool works as a launcher of Mocha. When you write your test code with Mocha, you can execute the test code on the Mocha from the test tool. Of course, you can use other libraries to write your test code, for example [Chai](https://www.chaijs.com/). To test your actions, you should need to talk to the Google Assistant from your test code. You can use the `Conversation` object, which has already been configured to communicate with the Google Assistant, in your test code.
+
+You can write and run your test code by the following step. We use actions-tools, mocha and chai to write your test code.
+
+## Prepare an environment
+
+Here, create a directory and install dependencies.
+
+1. Create a directory to put your test code and move to the directory in your terminal.
+1. Link the actions-tools, which has already been installed in global, from the directory.
+1. Install dependencies in the directory.
+
+```bash
+$ mkdir action-test
+$ cd action-test
+$ npm link actions-tools
+$ npm install chai
+```
+
+## Write your test code
+
+Write your test code with Mocha, Chai and `Conversation` object. The Mocha is a testing framework based on the Behavior-Driven Development, therefore, you can write your test code with `describe` and `it` and etc. The Chai is an assertion library and provides `should` and `expect` functions. Last, the `Conversation` object is provided by the actions-tools. You can retrieve the `Conversation` object, which has already been configured to communicate with the Google Assistant, by the following code:
+
+```js
+const tools = require("actions-tools");
+
+const conv = tools.Testing.getConversation();
+```
+
+For example, the following code is to test the [Hexadecimal conversion](https://assistant.google.com/services/a/uid/0000004bc3374c18?hl=en-US) action.
+
+```js
+const {expect} = require("chai");
+const tools = require("actions-tools");
+
+const conv = tools.Testing.getConversation();
+
+describe("Happy path - Hexadecimal conversion", () => {
+    it("says a welcome message against starting the talk.", (done) => {
+        conv.say("Talk to Hexadecimal conversion").then(response => {
+            expect(response.displayText.length).to.equal(1);
+            expect(response.displayText[0]).to.include(
+                "Please say decimal or hexadecimal number.");
+        }).then(done, done);
+    });
+    it("says converted numbers against saying the number", (done) => {
+        conv.say("123").then(response => {
+            expect(response.displayText.length).to.equal(1);
+            expect(response.displayText[0]).to.include(
+                "7b hexadecimal number");
+            expect(response.displayText[0]).to.include(
+                "291 decimal number");
+        }).then(done, done);
+    });
+    it("ends the conversation against saying bye", (done) => {
+        conv.say("bye").then(response => {
+            expect(response.displayText.length).to.equal(1);
+            expect(response.displayText[0]).to.equal("See you again");
+        }).then(done, done);
+    });
+});
+```
+
+You can send user phrases with the `say` function of the `Conversion` object. The `say` function returns a `Promise` object. You can retrieve the response as the argument of the callback function passed to the `then` function. The structure of the response is the following:
+
+* `displayText` - The array of `displayText` strings.
+* `deviceAction` - Parsed [DeviceAction](https://developers.google.com/assistant/sdk/reference/rpc/google.assistant.embedded.v1alpha2#google.assistant.embedded.v1alpha2.DeviceAction) information.
+* `expectUserResponse`: `boolean` - The boolean value of the `expectUserResponse` in [AppResponse](https://developers.google.com/actions/reference/rest/Shared.Types/AppResponse).
+* `textToSpeech` - The array of `textToSpeech` strings.
+* `ssml` - The array of `ssml` strings.
+* `basicCard` - The array of Basic Card information represented by the [BasicCard](https://developers.google.com/actions/reference/rest/Shared.Types/AppResponse#basiccard).
+* `carouselBrowse` - The array of Carousel Browse information represented by the [CarouselBrowse](https://developers.google.com/actions/reference/rest/Shared.Types/AppResponse#carouselbrowse).
+* `mediaResponse` - The array of Media Response information represented by the [MediaResponse](https://developers.google.com/actions/reference/rest/Shared.Types/AppResponse#mediaresponse).
+* `tableCards` - The array of the Table Card information represented by the [TableCard](https://developers.google.com/actions/reference/rest/Shared.Types/AppResponse#tablecard).
+* `suggestions` - The array of suggestion chip strings.
+* `linkOutSuggestions` - The [LinkOutSuggestion](https://developers.google.com/actions/reference/rest/Shared.Types/AppResponse#linkoutsuggestion) information.
+* `possibleIntents` - The array of [ExpectedIntent](https://developers.google.com/actions/reference/rest/Shared.Types/AppResponse#expectedinput) information.
+* `responseMetadata` - The response metadata information included in the [DebugInfo](https://developers.google.com/assistant/sdk/reference/rpc/google.assistant.embedded.v1alpha2#google.assistant.embedded.v1alpha2.DebugInfo).
+* `screenOut` - The response when supporting a screen surface. This consists of the `format` and `data`.
+* `audioOut` - The audio data formatted by MP3. This type is Uint8Array.
+
+You need to create your test code file named `*test.js`. That is, the suffix of your test code file name must be `test.js`.
+
+## Execute test code
+
+After writing your test code, you can start your test with the test tool. In your terminal, execute the following command:
+
+```bash
+$ actions-tools test -i your_action.test.js
+```
+
+The interactive tool can accept the following options:
+
+* `-i` or `--input` - The file path of your test file path. Required.
+* `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `./credentials.json` is applied.
+* `-l` or `--locale` - The locale used during conversation with the Google Assistant. If omitted, the `en-US` is applied.
+* `-r` or `--report` - The report format. You can specify one of the [supported reporters](https://mochajs.org/#reporters).
+
+If you specify the `-i` value as a directory path, all files with `test.js` suffix in the directory are executed.
+
+![test](https://user-images.githubusercontent.com/261787/47972277-0f5e4d00-e0de-11e8-9d85-736c9372a760.png)
 
 # License
 
