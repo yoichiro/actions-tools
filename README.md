@@ -10,7 +10,7 @@ This provides you some useful tools to build your actions for the Google Assista
 * [autopilot](#how-to-use-autopilot) - This tool allows you to talk with the Google Assistant automatically with phrases you prepared in advance.
 * [test](#how-to-use-test) - This tool allows you to test your action talking with the Google Assistant.
 
-![interactive](https://user-images.githubusercontent.com/261787/47630450-310e8000-db84-11e8-99d7-e9b9c0cf3441.png)
+![actions-tools](https://user-images.githubusercontent.com/261787/48039385-e0b4a500-e1b7-11e8-843e-71f1531ce9a6.gif)
 
 # How to Install
 
