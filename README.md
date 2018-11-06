@@ -75,7 +75,7 @@ $ actions-tools setup -s <YOUR_DOWNLOADED_FILE_PATH>
 The setup tool can accept the following options:
 
 * `-s` or `--source` - The OAuth 2.0 credential file path that you downloaded from the Actions on Google. Required.
-* `-o` or `--output` - The converted file path. If omitted, the `./credentials.json` file path is specified.
+* `-o` or `--output` - The converted file path. If omitted, the `<USER_HOME>/.actions-tools/credentials.json` file path is applied.
 
 After the execution of the setup tool, you will see the URL that the setup tool generated. Copy the URL, then open your Web browser and open the URL.
 
@@ -102,7 +102,7 @@ $ actions-tools interactive
 
 The interactive tool can accept the following options:
 
-* `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `./credentials.json` is applied.
+* `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `<USER_HOME>/.actions-tools/credentials.json` is applied.
 * `-l` or `--locale` - The locale used during conversation with the Google Assistant. If omitted, the `en-US` is applied.
 * `-v` or `--level` - The output level. You can specify either `simple` and `debug`. If the `simple` selected, `displayText` strings will be outputted. Otherwise, all structures that consists of the response from the Google Assistant will be outputted. If omitted, the `simple` is applied.
 * `-s` or `--screen` - If you want to support the screen surface in addition to the audio, you use this option. You can specify either `off`, `file` and `play`. If omitted, the `off` is applied.
@@ -166,7 +166,7 @@ $ actions-tools autopilot -i dialog.yaml
 The interactive tool can accept the following options:
 
 * `-i` or `--input` - The file path of your dialog file. Required.
-* `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `./credentials.json` is applied.
+* `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `<USER_HOME>/.actions-tools/credentials.json` is applied.
 * `-v` or `--level` - The output level. You can specify either `simple` and `debug`. If the `simple` selected, `displayText` strings will be outputted. Otherwise, all structures that consists of the response from the Google Assistant will be outputted. If omitted, the `simple` is applied.
 * `-s` or `--screen` - If you want to support the screen surface in addition to the audio, you use this option. You can specify either `off`, `file` and `play`. If omitted, the `off` is applied.
   * `off` - Not support the screen surface.
@@ -281,7 +281,7 @@ $ actions-tools test -i your_action.test.js
 The interactive tool can accept the following options:
 
 * `-i` or `--input` - The file path of your test file path. Required.
-* `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `./credentials.json` is applied.
+* `-c` or `--credential` - The file path of the converted credential JSON file. If omitted, the `<USER_HOME>/.actions-tools/credentials.json` is applied.
 * `-l` or `--locale` - The locale used during conversation with the Google Assistant. If omitted, the `en-US` is applied.
 * `-r` or `--report` - The report format. You can specify one of the [supported reporters](https://mochajs.org/#reporters).
 

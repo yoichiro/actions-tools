@@ -1,6 +1,10 @@
 import * as fs from "fs"
 import * as readline from "readline"
 import {OAuth2Client} from "google-auth-library"
+import * as os from "os"
+import * as makeDir from "make-dir"
+import * as path from "path"
+
 
 interface ClientSecretFile {
     installed: {
@@ -19,7 +23,7 @@ export class Setup {
 
     constructor(private params: {
         secret: string,
-        output: string,
+        output?: string,
     }) {
     }
 
@@ -34,7 +38,12 @@ export class Setup {
                 console.log(authUrl)
                 const authorizationCode = await this._readAuthorizationCode()
                 const tokenInfo = await this._getToken(oauth2Client, authorizationCode, clientSecretData)
-                const outputFilePath = this.params.output
+                let outputFilePath = this.params.output
+                if (!outputFilePath) {
+                    const parentDir = path.join(os.homedir(), ".actions-tools")
+                    makeDir.sync(parentDir)
+                    outputFilePath = path.join(parentDir, "credentials.json")
+                }
                 await this._createCredentialFile(tokenInfo, outputFilePath)
             } catch(e) {
                 console.error(e.message)
