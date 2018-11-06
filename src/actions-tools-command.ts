@@ -5,6 +5,8 @@ import {Conversation} from "./conversation"
 import * as fs from "fs"
 import {Autopilot} from "./autopilot"
 import {Testing} from "./testing"
+import * as os from "os"
+import * as path from "path"
 
 export class ActionsToolsCommand {
 
@@ -36,7 +38,6 @@ export class ActionsToolsCommand {
                         alias: "o",
                         description: "Output file path",
                         type: "string",
-                        default: "./credentials.json",
                     })
             }, async (args: yargs.Arguments) => {
                 await this._startSetup(args.secret, args.output)
@@ -49,7 +50,6 @@ export class ActionsToolsCommand {
                     .option("credential", {
                         alias: "c",
                         description: "Your credential file path",
-                        default: "./credentials.json",
                         type: "string",
                     })
                     .option("locale", {
@@ -93,13 +93,13 @@ export class ActionsToolsCommand {
                     })
             }, async (args: yargs.Arguments) => {
                 await this._startInteraction(
-                    args.credential,
                     args.locale,
                     args.level,
                     args.screen,
                     args.audio,
                     args.output,
                     args.rich,
+                    args.credential,
                 )
                 this._exit(0)
             })
@@ -117,7 +117,6 @@ export class ActionsToolsCommand {
                     .option("credential", {
                         alias: "c",
                         description: "Your credential file path",
-                        default: "./credentials.json",
                         type: "string",
                     })
                     .option("level", {
@@ -156,12 +155,12 @@ export class ActionsToolsCommand {
             }, async (args: yargs.Arguments) => {
                 await this._startAutopilot(
                     args.input,
-                    args.credential,
                     args.level,
                     args.screen,
                     args.audio,
                     args.output,
                     args.rich,
+                    args.credential,
                 )
                 this._exit(0)
             })
@@ -173,7 +172,6 @@ export class ActionsToolsCommand {
                     .option("credential", {
                         alias: "c",
                         description: "Your credential file path",
-                        default: "./credentials.json",
                         type: "string",
                     })
                     .option("locale", {
@@ -196,10 +194,10 @@ export class ActionsToolsCommand {
                     })
             }, async (args: yargs.Arguments) => {
                 const exitCode = await this._startTesting(
-                    args.credential,
                     args.locale,
                     args.input,
                     args.report,
+                    args.credential,
                 )
                 this._exit(exitCode)
             })
@@ -215,79 +213,87 @@ export class ActionsToolsCommand {
         process.exit(code)
     }
 
-    async _startSetup(secret: string, output: string): Promise<void> {
+    async _startSetup(secret: string, output?: string): Promise<void> {
         const setup = this._createSetup(secret, output)
         await setup.start()
     }
 
-    _createSetup(secret: string, output: string): Setup {
+    _createSetup(secret: string, output?: string): Setup {
         return new Setup({
             secret,
             output,
         })
     }
 
-    async _startInteraction(credential: string,
-                            locale: string,
+    async _startInteraction(locale: string,
                             level: string,
                             screen: string,
                             audio: string,
                             output: string,
-                            rich: boolean): Promise<void> {
-        const interactive = this._createInteractive(credential, locale, level, screen, audio, output, rich)
+                            rich: boolean,
+                            credential?: string): Promise<void> {
+        const interactive = this._createInteractive(locale, level, screen, audio, output, rich, credential)
         await interactive.start()
     }
 
-    _createInteractive(credential: string,
-                       locale: string,
+    _createInteractive(locale: string,
                        level: string,
                        screen: string,
                        audio: string,
                        output: string,
-                       rich: boolean): Interactive {
-        const conversation = new Conversation(require(fs.realpathSync(credential)))
+                       rich: boolean,
+                       credential?: string): Interactive {
+        const conversation = new Conversation(require(this._createCredentialFilePath(credential)))
         conversation.locale = locale
         conversation.screenSupport = screen !== "off"
         const interactive = new Interactive(conversation, level, screen, audio, output, rich)
         return interactive
     }
 
+    _createCredentialFilePath(credential?: string): string {
+        if (credential) {
+            return fs.realpathSync(credential)
+        } else {
+            return path.join(os.homedir(), ".actions-tools", "credentials.json")
+        }
+    }
+
     async _startAutopilot(input: string,
-                          credential: string,
                           level: string,
                           screen: string,
                           audio: string,
                           output: string,
-                          rich: boolean): Promise<void> {
-        const autopilot = this._createAutopilot(input, credential, level, screen, audio, output, rich)
+                          rich: boolean,
+                          credential?: string): Promise<void> {
+        const autopilot = this._createAutopilot(input, level, screen, audio, output, rich, credential)
         await autopilot.start()
     }
 
     _createAutopilot(input: string,
-                     credential: string,
                      level: string,
                      screen: string,
                      audio: string,
                      output: string,
-                     rich: boolean): Autopilot {
-        const conversation = new Conversation(require(fs.realpathSync(credential)))
+                     rich: boolean,
+                     credential?: string): Autopilot {
+        const conversation = new Conversation(require(this._createCredentialFilePath(credential)))
         conversation.screenSupport = screen !== "off"
         return new Autopilot(conversation, input, level, screen, audio, output, rich)
     }
 
-    async _startTesting(credential: string,
-                        locale: string,
+    async _startTesting(locale: string,
                         input: string,
-                        report: string): Promise<number> {
-        const testing = this._createTesting(credential, locale, input, report)
+                        report: string,
+                        credential?: string): Promise<number> {
+        const testing = this._createTesting(locale, input, report, credential)
         return await testing.start()
     }
 
-    _createTesting(credential: string,
-                   locale: string,
+    _createTesting(locale: string,
                    input: string,
-                   report: string): Testing {
-        const conversation = new Conversation(require(fs.realpathSync(credential)))
+                   report: string,
+                   credential?: string): Testing {
+        const conversation = new Conversation(require(this._createCredentialFilePath(credential)))
         conversation.locale = locale
         return Testing.createInstance(conversation, input, report)
     }
